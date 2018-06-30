@@ -1,35 +1,45 @@
-// console.log('hello world');
 const Koa = require('koa');
+const router = require('koa-router')();
+const bodyparser = require('koa-bodyparser');
 const app = new Koa();
 
-// 每收到一个http请求，koa会通过app.use()注册的async函数
-// 同时为该函数传入ctx和next函数
-// async是中间件
-app.use(async (ctx, next) => {
-  let startTime = new Date().getTime();
-  await next();
-  let endTime = new Date().getTime();
-  ctx.response.type = 'text/html';
-  ctx.response.body = '<h1>hello world</h1>';
-  console.log(`请求地址：${ctx.url}，响应时间：${endTime - startTime}ms`);
-})
-  .use(async (ctx, next) => {
-    console.log(ctx);
-    console.log(ctx.url);
-    console.log('中间件1 doSomething');
-    await next();
-    console.log('中间件1 end');
+app.use(bodyparser());
+
+router
+  .get('/', async (ctx, next) => {
+    ctx.response.body = '<h1>index page</h1>';
   })
-  .use(async (ctx, next) => {
-    console.log('中间件2 doSomething');
-    // await next();
-    console.log('中间件2 end');
+  .get('/home', async (ctx, next) => {
+    console.log(ctx.request.query);
+    console.log(ctx.request.querystring);
+    ctx.response.body = '<h1>home page</h1>';
   })
-  .use(async (ctx, next) => {
-    console.log('中间件3 doSomething');
-    await next();
-    console.log('中间件3 end');
+  .get('/home/:id/:name', async (ctx, next) => {
+    console.log(ctx.params);
+    ctx.response.body = '<h1>home page</h1>';
   })
+  .get('/404', async (ctx) => {
+    ctx.response.body = '<h1>404 Not Found</h1>';
+  })
+  .get('/user', async (ctx, next) => {
+    ctx.response.body = `<form action="/user/register" method="post">
+      <input name="name" type="text" placeholder="请输入用户名：koa"/> 
+      <br/>
+      <input name="password" type="password" placeholder="请输入密码：123456"/>
+      <br/> 
+      <button>提交</button>
+    </form>`
+  })
+  .post('/user/register', async (ctx, next) => {
+    let { name, password } = ctx.request.body;
+    if (name === 'koa' && password === '123456') {
+      ctx.response.body = `hello ${name}!`;
+    } else {
+      ctx.response.body = '账号信息错误';
+    }
+  })
+
+app.use(router.routes());
 
 app.listen(3000, () => {
   console.log('server is runing at http://localhost:3000');
