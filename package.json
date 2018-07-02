@@ -1,16 +1,15 @@
 {
-  "name": "koa2-tutorial-test",
+  "name": "koa2-tutorial",
   "version": "1.0.0",
-  "description": "koa2-tutorial-test",
+  "description": "koa2-tutorial study",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "llmei",
+  "author": "meilingli",
   "license": "ISC",
   "dependencies": {
     "koa": "^2.5.1",
-    "koa-bodyparser": "^4.2.1",
     "koa-router": "^7.4.0"
   }
 }
