@@ -1,36 +1,48 @@
-// console.log('hello world');
 const Koa = require('koa');
+const Router = require('koa-router');
 const app = new Koa();
+const router = new Router();
 
-// 每收到一个http请求，koa会通过app.use()注册的async函数
-// 同时为该函数传入ctx和next函数
-// async是中间件
-app.use(async (ctx, next) => {
-  let startTime = new Date().getTime();
-  await next();
-  let endTime = new Date().getTime();
-  ctx.response.type = 'text/html';
-  ctx.response.body = '<h1>hello world</h1>';
-  console.log(`请求地址：${ctx.url}，响应时间：${endTime - startTime}ms`);
-})
-  .use(async (ctx, next) => {
-    console.log(ctx);
-    console.log(ctx.url);
-    console.log('中间件1 doSomething');
-    await next();
-    console.log('中间件1 end');
+// app
+//   .use(async (ctx, next) => {
+//     if (ctx.request.path === '/') {
+//       ctx.response.body = '<h1>index page</h1>';
+//     } else {
+//       await next();
+//     }
+//   })
+//   .use(async (ctx, next) => {
+//     if (ctx.request.path === '/home') {
+//       ctx.response.body = '<h1>home page</h1>';
+//     } else {
+//       await next();
+//     }
+//   })
+//   .use(async (ctx, next) => {
+//     if (ctx.request.path === '/404') {
+//       ctx.response.body = '<h1>404 not found</h1>';
+//     } else {
+//       await next();
+//     }
+//   })
+
+// 添加路由
+router
+  .get('/', async (ctx, next) => {
+    ctx.response.body = '<h1>index page</h1>';
   })
-  .use(async (ctx, next) => {
-    console.log('中间件2 doSomething');
-    // await next();
-    console.log('中间件2 end');
+  .get('/home', async (ctx, next) => {
+    ctx.response.body = '<h1>home page</h1>';
   })
-  .use(async (ctx, next) => {
-    console.log('中间件3 doSomething');
-    await next();
-    console.log('中间件3 end');
+  .get('/404', async (ctx, next) => {
+    ctx.response.body = '<h1>404 not Found</h1>';
   })
+
+// 调用路由中间件
+app
+  .use(router.routes())
+  .use(router.allowedMethods());
 
 app.listen(3000, () => {
-  console.log('server is runing at http://localhost:3000');
+  console.log('server is running at http://localhost:3000');
 })
