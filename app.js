@@ -1,17 +1,23 @@
 const Koa = require('koa');
-const Router = require('koa-router');
+const nunjucks = require('koa-nunjucks-2');
+const path = require('path');
+const bodyparser = require('koa-bodyparser');
+
 const app = new Koa();
-const router = new Router();
+const router = require('./router');
 
-module.exports = (app) => {
-  router
-    .get('/', homeController.index)
-    .get('/home', homeController.home)
-    .get('/home/:id/:name', homeController.homeParams)
-    .get('/user', homeController.login)
-    .post('/user/register', homeController.register)
+app
+  .use(nunjucks({
+    ext: 'html',
+    path: path.join(__dirname, 'view'),
+    nunjucksConfig: {
+      trimBlocks: true
+    }
+  }))
+  .use(bodyparser());
 
-  app
-    .use(router.routes())
-    .use(router.allowedMethods());
-}
+router(app);
+
+app.listen('3000', () => {
+  console.log('server is running at http://loccalhost:3000');
+})
