@@ -1,3 +1,5 @@
+const homeService = require('../service/home');
+
 module.exports = {
   index: async (ctx, next) => {
     ctx.response.body = '<h1>index page</h1>';
@@ -21,11 +23,8 @@ module.exports = {
     </form>`
   },
   register: async (ctx, next) => {
-    let { name, password } = ctx.request.body;
-    if (name === 'koa' && password === '123456') {
-      ctx.response.body = `hello ${name}!`;
-    } else {
-      ctx.response.body = '账号信息错误';
-    }
+    const { name, password } = ctx.request.body;
+    const data = await homeService.register(name, password);
+    ctx.response.body = data;
   }
 }
