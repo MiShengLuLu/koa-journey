@@ -1,12 +1,17 @@
 const Koa = require('koa');
-const router = require('./router');
-const bodyparser = require('koa-bodyparser');
+const Router = require('koa-router');
 const app = new Koa();
+const router = new Router();
 
-app.use(bodyparser());
+module.exports = (app) => {
+  router
+    .get('/', homeController.index)
+    .get('/home', homeController.home)
+    .get('/home/:id/:name', homeController.homeParams)
+    .get('/user', homeController.login)
+    .post('/user/register', homeController.register)
 
-router(app);
-
-app.listen(3000, () => {
-  console.log('server is runing at http://localhost:3000');
-})
+  app
+    .use(router.routes())
+    .use(router.allowedMethods());
+}
