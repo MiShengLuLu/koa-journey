@@ -1,5 +1,5 @@
 const router = require('koa-router')();
-const homeController = require('./controller/home');
+const homeController = require('./src/controller/home');
 
 module.exports = (app) => {
   router
